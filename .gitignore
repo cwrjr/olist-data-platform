@@ -1,0 +1,16 @@
+# Secrets, tokens, and local profiles
+.env
+*.env
+transformations/profiles.yml
+
+# Python / Environment artifacts
+__pycache__/
+*.pyc
+.venv/
+.dbt/
+.databricks/
+
+# Large raw data files (gitignored locally)
+*.csv
+*.xlsx
+ingestion/data/
