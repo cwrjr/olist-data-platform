@@ -1,7 +1,7 @@
 import os
 import sys
 from pathlib import Path
-from databricks.sdk import WorkspaceClient
+from databricks.sdk import WorkspaceClient  # type: ignore
 
 # 1. Initialize the Databricks Client (automatically uses your .env variables)
 DATABRICKS_HOST = os.environ.get("DATABRICKS_HOST")
