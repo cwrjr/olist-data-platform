@@ -14,3 +14,9 @@ __pycache__/
 *.csv
 *.xlsx
 ingestion/data/
+
+# dbt artifacts
+**/target/
+**/dbt_packages/
+**/logs/
+**/.user.yml

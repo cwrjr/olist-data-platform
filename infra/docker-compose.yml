@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  dev_env:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # Maps your local project files into the Docker container
+      - ../:/workspace
+    env_file:
+      # Automatically injects your DATABRICKS_HOST and TOKEN
+      - ../.env
+    container_name: olist_dev_container
