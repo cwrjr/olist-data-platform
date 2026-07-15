@@ -12,3 +12,5 @@ services:
       # Automatically injects your DATABRICKS_HOST and TOKEN
       - ../.env
     container_name: olist_dev_container
+    # Keep the interactive bash session alive in the background
+    tty: true
