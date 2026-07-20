@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: stg_olist_orders
+    description: "Staged orders table with cleaned logistics and transaction timestamps."
+    columns:
+      - name: order_key
+        description: "Primary key of the order."
+        tests:
+          - not_null
+          - unique
+      - name: customer_key
+        description: "Key linking to the customer who placed the order."
+        tests:
+          - not_null

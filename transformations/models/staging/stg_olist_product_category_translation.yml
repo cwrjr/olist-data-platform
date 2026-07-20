@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: stg_olist_product_category_translation
+    description: "Lookup crosswalk mapping Portuguese product category names to English."
+    columns:
+      - name: category_name_portuguese
+        description: "Portuguese product category name (natural key)."
+        tests:
+          - unique
+          - not_null

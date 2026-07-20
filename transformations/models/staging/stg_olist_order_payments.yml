@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_olist_order_payments
+    description: "Staged order payments data including payment methods, installments, and values."
+    columns:
+      - name: order_key
+        description: "Foreign key linking to the order."
+        tests:
+          - not_null
+      - name: payment_sequential
+        description: "Sequence number of the payment for orders with multiple payment methods."
+        tests:
+          - not_null
+      - name: payment_value
+        description: "Transaction monetary value of the payment."
+        tests:
+          - not_null

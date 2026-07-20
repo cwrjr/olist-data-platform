@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: olist_raw
+    description: "Raw unstructured CSVs uploaded directly to Unity Catalog Volumes"
+    loader: external
+    tables:
+      - name: customers
+        description: "Customer geographic and profile mapping"
+      - name: geolocation
+        description: "Brazilian zip code coordinates and city/state mapping"
+      - name: orders
+        description: "Core order transaction logs and logistics timestamps"
+      - name: order_items
+        description: "Items included in each order with price and seller mapping"
+      - name: products
+        description: "Product catalog attributes including dimensions and categories"
+      - name: order_payments
+        description: "Payment transaction methods, installments, and amounts per order"
+      - name: order_reviews
+        description: "Customer feedback ratings, comments, and response timestamps"
+      - name: sellers
+        description: "Seller identification and regional location mapping"
+      - name: product_category_name_translation
+        description: "Crosswalk mapping Portuguese category names to English"

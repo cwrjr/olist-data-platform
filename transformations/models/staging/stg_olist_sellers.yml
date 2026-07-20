@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: stg_olist_sellers
+    description: "Staged seller dimension data including location and state mapping."
+    columns:
+      - name: seller_key
+        description: "Primary key of the seller."
+        tests:
+          - unique
+          - not_null

@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_olist_geolocation
+    description: "Deduplicated Brazilian zip code prefix to coordinate/city/state mapping. One row per zip_code_prefix."
+    columns:
+      - name: zip_code_prefix
+        description: "Brazilian zip code prefix (natural key, deduplicated to one row per prefix)"
+        tests:
+          - not_null
+          - unique
+      - name: latitude
+        description: "Latitude of a representative coordinate for this zip code prefix"
+        tests:
+          - not_null
+      - name: longitude
+        description: "Longitude of a representative coordinate for this zip code prefix"
+        tests:
+          - not_null
+      - name: city
+        description: "City name associated with the selected coordinate"
+      - name: state
+        description: "State abbreviation associated with the selected coordinate"

@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: stg_olist_products
+    description: "Staged product catalog dimension items."
+    columns:
+      - name: product_key
+        description: "The unique primary identifier for each individual product."
+        tests:
+          - unique
+          - not_null

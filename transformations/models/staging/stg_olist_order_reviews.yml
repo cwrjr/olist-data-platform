@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: stg_olist_order_reviews
+    description: "Deduplicated customer review ratings, feedback messages, and timestamps."
+    columns:
+      - name: review_key
+        description: "Primary key of the customer review."
+        tests:
+          - unique
+          - not_null
+      - name: order_key
+        description: "Foreign key linking to the evaluated order."
+        tests:
+          - not_null
+      - name: review_score
+        description: "Review score rating (1 to 5 stars)."
+        tests:
+          - not_null
