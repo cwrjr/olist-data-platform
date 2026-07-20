@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: dim_sellers
+    description: "Master seller dimension table enriched with unique geographic coordinates."
+    columns:
+      - name: seller_key
+        description: "Primary key uniquely identifying each merchant in the marketplace."
+        tests:
+          - unique
+          - not_null
+      - name: latitude
+        description: "Latitude coordinate of the seller's zip code prefix centroid (null if no match found)."
+      - name: longitude
+        description: "Longitude coordinate of the seller's zip code prefix centroid (null if no match found)."

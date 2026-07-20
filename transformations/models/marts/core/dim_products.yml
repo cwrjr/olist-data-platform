@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: "Master product dimension table with English category translations."
+    columns:
+      - name: product_key
+        description: "Primary key of the product dimension."
+        tests:
+          - unique
+          - not_null
+      - name: category_name
+        description: "English category name with Portuguese fallback."
+        tests:
+          - not_null

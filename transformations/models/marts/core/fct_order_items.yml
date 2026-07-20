@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: fct_order_items
+    description: "Granular transactional line-item fact table containing pricing, freight, and item fulfillment details."
+    columns:
+      - name: order_key
+        description: "Foreign key linking to the order."
+        tests:
+          - not_null
+      - name: order_item_id
+        description: "Line item sequential number within the order."
+        tests:
+          - not_null
+      - name: customer_key
+        description: "Foreign key linking to the customer."
+        tests:
+          - not_null
+      - name: product_key
+        description: "Foreign key linking to the product dimension."
+        tests:
+          - not_null
+      - name: seller_key
+        description: "Foreign key linking to the seller dimension."
+        tests:
+          - not_null
+      - name: price
+        description: "Item price."
+        tests:
+          - not_null

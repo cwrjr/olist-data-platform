@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Master customer dimension table enriched with unique geographic coordinates."
+    columns:
+      - name: customer_key
+        description: "Primary key for individual order-level customer records."
+        tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        description: "The unique identifier tracking the actual individual customer across multiple orders."
+        tests:
+          - not_null
+      - name: latitude
+        description: "Latitude coordinate of the customer's zip code prefix centroid (null if no match found)."
+      - name: longitude
+        description: "Longitude coordinate of the customer's zip code prefix centroid (null if no match found)."

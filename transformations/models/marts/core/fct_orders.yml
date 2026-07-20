@@ -1,0 +1,22 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: "The primary fact table tracking core order lifecycle status, metrics, and financials."
+    columns:
+      - name: order_key
+        description: "Primary key identifying the individual order instance."
+        tests:
+          - unique
+          - not_null
+      - name: customer_key
+        description: "Foreign key linking out to the master customer records."
+        tests:
+          - not_null
+      - name: delivery_buffer_days
+        description: "Days between actual delivery and estimated delivery (positive = buffer remaining / early delivery)."
+      - name: delivery_performance_status
+        description: "Bucketed delivery outcome relative to estimate and order status."
+        tests:
+          - accepted_values:
+              values: ['On Time / Early', 'Late', 'In Flight', 'Canceled / Unavailable']
