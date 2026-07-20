@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: int_seller_performance_enriched
+    description: "Intermediate seller performance metrics detailing historical volume and delivery speed."
+    columns:
+      - name: seller_key
+        description: "Primary key identifying the seller."
+        tests:
+          - unique
+          - not_null

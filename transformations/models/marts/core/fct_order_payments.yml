@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: fct_order_payments
+    description: "Granular payment transaction methods, installments, and payment amounts."
+    columns:
+      - name: order_payment_key
+        description: "Primary surrogate key of the order payment record."
+        tests:
+          - unique
+          - not_null
+      - name: order_key
+        description: "Foreign key linking to the order."
+        tests:
+          - not_null

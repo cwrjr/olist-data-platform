@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: dim_dates
+    description: "Master calendar dimension table providing static date attributes for time-series analytics."
+    columns:
+      - name: date_key
+        description: "Primary key date value."
+        tests:
+          - unique
+          - not_null

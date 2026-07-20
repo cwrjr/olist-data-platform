@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: fct_order_reviews
+    description: "Customer review scores, comments, and response latency metrics."
+    columns:
+      - name: review_key
+        description: "Primary key identifying the individual review."
+        tests:
+          - unique
+          - not_null
+      - name: order_key
+        description: "Foreign key linking to the evaluated order."
+        tests:
+          - not_null
