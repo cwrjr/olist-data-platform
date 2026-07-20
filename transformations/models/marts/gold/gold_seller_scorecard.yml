@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: gold_seller_scorecard
+    description: "Comprehensive merchant performance scorecard including sales revenue, unique human buyers served, delivery speed, and customer ratings."
+    columns:
+      - name: seller_key
+        description: "Primary key of the seller."
+        tests:
+          - unique
+          - not_null
+      - name: historical_orders_handled
+        description: "Total historical order volume handled by this merchant."
+        tests:
+          - not_null

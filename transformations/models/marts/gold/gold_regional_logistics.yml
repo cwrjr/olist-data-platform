@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: gold_regional_logistics
+    description: "Origin to destination (seller state to customer state) fulfillment matrix, SLA breach rates, and delivery duration metrics."
+    columns:
+      - name: origin_state
+        description: "Seller origin state abbreviation."
+        tests:
+          - not_null
+      - name: destination_state
+        description: "Customer destination state abbreviation."
+        tests:
+          - not_null
+      - name: total_orders_shipped
+        description: "Total order count shipped along this state-to-state corridor."
+        tests:
+          - not_null

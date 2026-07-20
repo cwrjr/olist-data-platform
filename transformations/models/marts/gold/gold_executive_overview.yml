@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: gold_executive_overview
+    description: "Monthly executive KPI scorecard aggregating GMV, order volume, AOV, on-time delivery rate, and average review score."
+    columns:
+      - name: calendar_year
+        description: "Calendar year."
+        tests:
+          - not_null
+      - name: calendar_month
+        description: "Calendar month number."
+        tests:
+          - not_null
+      - name: total_gmv
+        description: "Total gross merchandise value including merchandise and freight."
+        tests:
+          - not_null
