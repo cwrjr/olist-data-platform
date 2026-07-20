@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: gold_review_text_signals
+    description: "Customer feedback text signal analysis, written comment rates, response latency by score rating, and operational complaint flags."
+    columns:
+      - name: review_score
+        description: "Rating score (1 to 5 stars)."
+        tests:
+          - unique
+          - not_null
+      - name: total_reviews_count
+        description: "Total review count for this rating score."
+        tests:
+          - not_null

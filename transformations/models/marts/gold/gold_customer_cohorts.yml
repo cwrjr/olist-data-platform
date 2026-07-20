@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: gold_customer_cohorts
+    description: "Monthly customer growth cohort metrics tracking new vs returning human buyers, repeat rates, and GMV contribution."
+    columns:
+      - name: calendar_year
+        description: "Calendar year."
+        tests:
+          - not_null
+      - name: calendar_month
+        description: "Calendar month."
+        tests:
+          - not_null
+      - name: total_unique_buyers
+        description: "Total unique human buyers active in the month."
+        tests:
+          - not_null

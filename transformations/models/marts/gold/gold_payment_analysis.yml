@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: gold_payment_analysis
+    description: "Payment method breakdown, installment average counts, captured payment volume, and financial GMV reconciliation."
+    columns:
+      - name: payment_type
+        description: "Payment method (credit_card, boleto, voucher, debit_card)."
+        tests:
+          - unique
+          - not_null
+      - name: total_captured_payment_value
+        description: "Total payment revenue captured."
+        tests:
+          - not_null
