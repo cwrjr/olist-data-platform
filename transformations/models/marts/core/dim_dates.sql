@@ -4,8 +4,8 @@
 ) }}
 
 with date_sequence as (
-    -- Generates a continuous series covering the entire Olist dataset timeline (2016-2018)
-    select explode(sequence(to_date('2016-01-01'), to_date('2018-12-31'), interval 1 day)) as date_day
+    -- Generates a continuous series covering the entire dataset and estimated delivery dates (2016-2020)
+    select explode(sequence(to_date('2016-01-01'), to_date('2020-12-31'), interval 1 day)) as date_day
 )
 
 select
