@@ -4,43 +4,75 @@
 ) }}
 
 with orders as (
-    select * from {{ ref('fct_orders') }}
+    select 
+        order_key,
+        customer_key,
+        purchased_at,
+        estimated_delivery_at,
+        actual_delivery_days
+    from {{ ref('fct_orders') }}
 ),
 
-dates as (
-    select * from {{ ref('dim_dates') }}
+items as (
+    select 
+        order_key,
+        seller_key,
+        price,
+        freight_value
+    from {{ ref('fct_order_items') }}
 ),
 
-reviews as (
-    select * from {{ ref('fct_order_reviews') }}
+customers as (
+    select 
+        customer_key, 
+        state as customer_state 
+    from {{ ref('dim_customers') }}
+),
+
+simulated as (
+    select
+        o.order_key,
+        o.customer_key,
+        i.seller_key,
+        c.customer_state,
+        o.purchased_at,
+        o.estimated_delivery_at,
+        o.actual_delivery_days as actual_shipping_days,
+        i.freight_value as actual_freight,
+        
+        -- Simulation: consolidated hub logistics saves 35% time and freight cost.
+        -- We apply least() to prevent optimized shipping days from exceeding actual shipping days on fast shipments.
+        coalesce(least(o.actual_delivery_days, greatest(1, round(o.actual_delivery_days * 0.65))), 0) as optimized_shipping_days,
+        coalesce(round(i.freight_value * 0.65, 2), 0.0) as optimized_freight
+
+    from orders o
+    join items i on o.order_key = i.order_key
+    join customers c on o.customer_key = c.customer_key
+    where o.actual_delivery_days is not null
+      and i.freight_value is not null
 )
 
 select
-    d.calendar_year,
-    d.calendar_month,
-    d.month_name,
-    d.quarter_year,
+    order_key,
+    customer_key,
+    seller_key,
+    customer_state,
+    purchased_at,
+    estimated_delivery_at,
+    actual_shipping_days,
+    actual_freight,
+    optimized_shipping_days,
+    optimized_freight,
     
-    -- Financial & Volume Metrics
-    round(sum(o.total_order_value), 2) as total_gmv,
-    count(distinct o.order_key) as total_orders,
-    round(sum(o.total_order_value) / nullif(count(distinct o.order_key), 0), 2) as avg_order_value,
+    -- Savings metrics
+    (actual_shipping_days - optimized_shipping_days) as days_saved,
+    round(actual_freight - optimized_freight, 2) as freight_dollars_saved,
     
-    -- Fulfillment SLA Metrics (Denominator filtered to fulfilled orders to avoid in-flight/canceled dilution)
-    count(case when o.delivered_to_customer_at is not null then 1 end) as fulfilled_orders_count,
-    round(
-        count(case when o.delivery_performance_status = 'On Time / Early' then 1 end) * 100.0 / 
-        nullif(count(case when o.delivered_to_customer_at is not null then 1 end), 0), 
-        2
-    ) as on_time_delivery_rate_pct,
-    
-    -- Customer Satisfaction (Explicit Average Review Score)
-    round(avg(r.review_score), 2) as avg_review_score
+    -- Late flags
+    case 
+        when optimized_shipping_days > datediff(estimated_delivery_at, purchased_at) 
+        then 1 
+        else 0 
+    end as is_optimized_late
 
-from orders o
-left join dates d 
-    on to_date(o.purchased_at) = d.date_key
-left join reviews r 
-    on o.order_key = r.order_key
-where d.calendar_year is not null
-group by 1, 2, 3, 4
+from simulated

@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: gold_spatial_routing
+    description: "Sampled spatial coordinate routes detailing origin, destination, and regional hub locations for high-fidelity 3D map rendering."
+    columns:
+      - name: order_key
+        description: "Key linking back to the order."
+        tests:
+          - not_null
+      - name: seller_lat
+        description: "Latitude coordinate of the seller origin."
+        tests:
+          - not_null
+      - name: seller_lon
+        description: "Longitude coordinate of the seller origin."
+        tests:
+          - not_null
+      - name: customer_lat
+        description: "Latitude coordinate of the customer destination."
+        tests:
+          - not_null
+      - name: customer_lon
+        description: "Longitude coordinate of the customer destination."
+        tests:
+          - not_null
+      - name: hub_lat
+        description: "Latitude coordinate of the routed regional logistics hub."
+        tests:
+          - not_null
+      - name: hub_lon
+        description: "Longitude coordinate of the routed regional logistics hub."
+        tests:
+          - not_null

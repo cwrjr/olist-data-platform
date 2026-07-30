@@ -2,17 +2,29 @@ version: 2
 
 models:
   - name: gold_executive_overview
-    description: "Monthly executive KPI scorecard aggregating GMV, order volume, AOV, on-time delivery rate, and average review score."
+    description: "Order-level logistics hub simulation dataset comparing baseline shipping metrics against consolidated hub optimization routes."
     columns:
-      - name: calendar_year
-        description: "Calendar year."
+      - name: order_key
+        description: "Primary key linking to the order."
         tests:
           - not_null
-      - name: calendar_month
-        description: "Calendar month number."
+      - name: customer_state
+        description: "State abbreviation of the customer."
         tests:
           - not_null
-      - name: total_gmv
-        description: "Total gross merchandise value including merchandise and freight."
+      - name: actual_shipping_days
+        description: "Actual calendar shipping days."
+        tests:
+          - not_null
+      - name: actual_freight
+        description: "Baseline freight cost."
+        tests:
+          - not_null
+      - name: optimized_shipping_days
+        description: "Simulated optimized transit days via regional hubs."
+        tests:
+          - not_null
+      - name: optimized_freight
+        description: "Simulated optimized consolidated freight cost."
         tests:
           - not_null
