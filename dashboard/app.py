@@ -191,11 +191,11 @@ else:
                 data=filtered_spatial,
                 get_source_position="[seller_lon, seller_lat]",
                 get_target_position="[customer_lon, customer_lat]",
-                get_source_color="[220, 53, 69, 80]",
-                get_target_color="[220, 53, 69, 120]",
-                width_min_pixels=1.5,
-                pickable=True,
-                auto_highlight=True,
+                get_source_color="[220, 53, 69, 70]",
+                get_target_color="[220, 53, 69, 100]",
+                width_min_pixels=1.2,
+                pickable=False,
+                auto_highlight=False,
             )
             layers.append(red_arc_layer)
             
@@ -206,11 +206,11 @@ else:
                 data=filtered_spatial,
                 get_source_position="[hub_lon, hub_lat]",
                 get_target_position="[customer_lon, customer_lat]",
-                get_source_color="[40, 167, 69, 140]",
-                get_target_color="[40, 167, 69, 180]",
-                width_min_pixels=1.5,
-                pickable=True,
-                auto_highlight=True,
+                get_source_color="[40, 167, 69, 120]",
+                get_target_color="[40, 167, 69, 150]",
+                width_min_pixels=1.2,
+                pickable=False,
+                auto_highlight=False,
             )
             layers.append(green_arc_layer)
 
@@ -227,15 +227,15 @@ else:
                 data=hub_data,
                 get_position="[lon, lat]",
                 get_elevation="capacity",
-                elevation_scale=0.1,
-                radius=18000,
+                elevation_scale=0.08,
+                radius=14000,
                 get_fill_color="[255, 193, 7, 210]",
-                pickable=True,
-                auto_highlight=True
+                pickable=False,
+                auto_highlight=False
             )
             layers.append(gold_hub_layer)
 
-        # Render Map with Pydeck
+        # Render Map with Pydeck (Tooltips disabled for cleaner UX)
         st.pydeck_chart(
             pdk.Deck(
                 map_style="mapbox://styles/mapbox/dark-v9",
@@ -246,13 +246,10 @@ else:
                     pitch=45,
                     bearing=0
                 ),
-                layers=layers,
-                tooltip={
-                    "html": "<b>Route Info</b><br/>Origin City: {seller_city}<br/>Customer City: {customer_city}<br/>Hub Route: {hub_name}",
-                    "style": {"backgroundColor": "#1a1e24", "color": "white", "zIndex": 100}
-                }
+                layers=layers
             )
         )
+
         
     with chart_col:
         st.subheader("Transit Lead Time Compression")

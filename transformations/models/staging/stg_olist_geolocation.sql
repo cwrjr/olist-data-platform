@@ -24,6 +24,9 @@ typed as (
         geolocation_state as state
 
     from raw_source
+    -- Clean out-of-bounds coordinates outside Brazil bounding box
+    where cast(geolocation_lat as double) between -34.0 and 6.0
+      and cast(geolocation_lng as double) between -74.0 and -34.0
 ),
 
 deduped as (
@@ -41,3 +44,4 @@ deduped as (
 )
 
 select * from deduped
+
