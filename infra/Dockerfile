@@ -19,7 +19,9 @@ RUN pip install --no-cache-dir \
     ruff==0.4.0 \
     sqlfluff==3.0.0 \
     streamlit==1.35.0 \
+    plotly==5.22.0 \
     databricks-sdk==0.17.0
+
 
 # Keep the container alive indefinitely so we can manually exec into it
 CMD ["tail", "-f", "/dev/null"]
