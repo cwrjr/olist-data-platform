@@ -214,11 +214,16 @@ else:
             )
             layers.append(green_arc_layer)
 
+        # Count orders routed to each hub dynamically from filtered_exec
+        sp_orders = len(filtered_exec[~filtered_exec["customer_state"].isin(["RJ", "MG"])]) if not filtered_exec.empty else 0
+        rj_orders = len(filtered_exec[filtered_exec["customer_state"] == "RJ"]) if not filtered_exec.empty else 0
+        mg_orders = len(filtered_exec[filtered_exec["customer_state"] == "MG"]) if not filtered_exec.empty else 0
+
         # 3. Yellow/Gold Extruded Hub Columns representing Hub inventory locations
         hub_data = pd.DataFrame([
-            {"hub_name": "Sao Paulo Hub", "lat": -23.5505, "lon": -46.6333, "capacity": 150000},
-            {"hub_name": "Rio de Janeiro Hub", "lat": -22.9068, "lon": -43.1729, "capacity": 90000},
-            {"hub_name": "Belo Horizonte Hub", "lat": -19.9167, "lon": -43.9345, "capacity": 60000}
+            {"hub_name": "Sao Paulo Hub", "lat": -23.5505, "lon": -46.6333, "capacity": 150000, "order_count": sp_orders},
+            {"hub_name": "Rio de Janeiro Hub", "lat": -22.9068, "lon": -43.1729, "capacity": 90000, "order_count": rj_orders},
+            {"hub_name": "Belo Horizonte Hub", "lat": -19.9167, "lon": -43.9345, "capacity": 60000, "order_count": mg_orders}
         ])
         
         if scenario_mode in ["Optimized Hubs", "Side-by-Side Comparison"]:
@@ -230,12 +235,12 @@ else:
                 elevation_scale=0.08,
                 radius=14000,
                 get_fill_color="[255, 193, 7, 210]",
-                pickable=False,
-                auto_highlight=False
+                pickable=True,
+                auto_highlight=True
             )
             layers.append(gold_hub_layer)
 
-        # Render Map with Pydeck (Tooltips disabled for cleaner UX)
+        # Render Map with Pydeck (Tooltips enabled ONLY for interactive hub column queries)
         st.pydeck_chart(
             pdk.Deck(
                 map_style="mapbox://styles/mapbox/dark-v9",
@@ -246,7 +251,20 @@ else:
                     pitch=45,
                     bearing=0
                 ),
-                layers=layers
+                layers=layers,
+                tooltip={
+                    "html": "<b>{hub_name}</b><br/>Orders Handled: {order_count:,}<br/>Capacity Allocation: {capacity:,}",
+                    "style": {
+                        "backgroundColor": "#1a1e24",
+                        "color": "white",
+                        "fontSize": "13px",
+                        "fontFamily": "Inter, sans-serif",
+                        "border": "1px solid #2d3139",
+                        "borderRadius": "5px",
+                        "padding": "10px",
+                        "zIndex": 1000
+                    }
+                }
             )
         )
 
@@ -287,7 +305,7 @@ else:
         fig.update_xaxes(showgrid=True, gridcolor="#262b32")
         fig.update_yaxes(showgrid=True, gridcolor="#262b32")
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
         st.subheader("Simulated Savings Scatter")
         scatter_fig = px.scatter(
@@ -306,4 +324,4 @@ else:
             plot_bgcolor="rgba(0,0,0,0)",
             margin=dict(l=0, r=0, t=10, b=0)
         )
-        st.plotly_chart(scatter_fig, use_container_width=True)
+        st.plotly_chart(scatter_fig, use_container_width=True, config={'displayModeBar': False})
