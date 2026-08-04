@@ -330,21 +330,48 @@ else:
         
         st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
-        st.subheader("Simulated Savings Scatter")
-        scatter_fig = px.scatter(
-            filtered_exec.sample(n=min(len(filtered_exec), 800), random_state=42),
-            x="actual_shipping_days",
-            y="freight_dollars_saved",
-            color="customer_state",
-            labels={
-                "actual_shipping_days": "Baseline Delivery Time (Days)",
-                "freight_dollars_saved": "Freight Saved ($)"
-            },
-            template="plotly_dark"
-        )
-        scatter_fig.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            margin=dict(l=0, r=0, t=10, b=0)
-        )
-        st.plotly_chart(scatter_fig, use_container_width=True, config={'displayModeBar': False})
+        st.subheader("📍 Top Corridor Efficiency Scorecard")
+        
+        # Merge datasets to link seller origin state with executive metrics
+        if not filtered_exec.empty and not filtered_spatial.empty:
+            merged_df = pd.merge(
+                filtered_exec,
+                filtered_spatial[["order_key", "seller_state", "seller_city", "customer_city"]],
+                on="order_key",
+                how="inner"
+            )
+            
+            if not merged_df.empty:
+                # Group by Origin and Destination corridor
+                corridor_df = merged_df.groupby(["seller_state", "customer_state"]).agg(
+                    total_orders=("order_key", "nunique"),
+                    avg_days_saved=("days_saved", "mean"),
+                    total_freight_saved=("freight_dollars_saved", "sum"),
+                    total_actual_freight=("actual_freight", "sum")
+                ).reset_index()
+                
+                # Calculate percentages and round values
+                corridor_df["freight_pct"] = (corridor_df["total_freight_saved"] / corridor_df["total_actual_freight"] * 100).round(1)
+                corridor_df["avg_days_saved"] = corridor_df["avg_days_saved"].round(1)
+                corridor_df["total_freight_saved"] = corridor_df["total_freight_saved"].round(2)
+                
+                # Sort by highest traffic corridor
+                corridor_df = corridor_df.sort_values(by="total_orders", ascending=False).head(5)
+                
+                # Select and rename columns for clean display
+                corridor_df = corridor_df[[
+                    "seller_state", "customer_state", "total_orders", 
+                    "avg_days_saved", "total_freight_saved", "freight_pct"
+                ]]
+                corridor_df.columns = [
+                    "Origin (Seller)", "Destination (Customer)", "Orders Handled", 
+                    "Avg Days Saved", "Total Saved ($)", "Cost Reduced (%)"
+                ]
+                
+                # Render beautiful Streamlit DataFrame
+                st.dataframe(corridor_df, use_container_width=True, hide_index=True)
+            else:
+                st.info("Select more states to view corridor metrics.")
+        else:
+            st.info("Select customer states in the sidebar to populate the corridor scorecard.")
+
