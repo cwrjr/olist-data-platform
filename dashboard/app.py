@@ -220,10 +220,32 @@ else:
         mg_orders = len(filtered_exec[filtered_exec["customer_state"] == "MG"]) if not filtered_exec.empty else 0
 
         # 3. Yellow/Gold Extruded Hub Columns representing Hub inventory locations
+        # We pre-format orders and capacity to strings in Python to bypass Pydeck/JS template formatting issues
         hub_data = pd.DataFrame([
-            {"hub_name": "Sao Paulo Hub", "lat": -23.5505, "lon": -46.6333, "capacity": 150000, "order_count": sp_orders},
-            {"hub_name": "Rio de Janeiro Hub", "lat": -22.9068, "lon": -43.1729, "capacity": 90000, "order_count": rj_orders},
-            {"hub_name": "Belo Horizonte Hub", "lat": -19.9167, "lon": -43.9345, "capacity": 60000, "order_count": mg_orders}
+            {
+                "hub_name": "Sao Paulo Hub", 
+                "lat": -23.5505, 
+                "lon": -46.6333, 
+                "capacity_val": 150000, 
+                "capacity": "150,000", 
+                "order_count": f"{sp_orders:,}"
+            },
+            {
+                "hub_name": "Rio de Janeiro Hub", 
+                "lat": -22.9068, 
+                "lon": -43.1729, 
+                "capacity_val": 90000, 
+                "capacity": "90,000", 
+                "order_count": f"{rj_orders:,}"
+            },
+            {
+                "hub_name": "Belo Horizonte Hub", 
+                "lat": -19.9167, 
+                "lon": -43.9345, 
+                "capacity_val": 60000, 
+                "capacity": "60,000", 
+                "order_count": f"{mg_orders:,}"
+            }
         ])
         
         if scenario_mode in ["Optimized Hubs", "Side-by-Side Comparison"]:
@@ -231,7 +253,7 @@ else:
                 "ColumnLayer",
                 data=hub_data,
                 get_position="[lon, lat]",
-                get_elevation="capacity",
+                get_elevation="capacity_val",
                 elevation_scale=0.08,
                 radius=14000,
                 get_fill_color="[255, 193, 7, 210]",
@@ -253,7 +275,7 @@ else:
                 ),
                 layers=layers,
                 tooltip={
-                    "html": "<b>{hub_name}</b><br/>Orders Handled: {order_count:,}<br/>Capacity Allocation: {capacity:,}",
+                    "html": "<b>{hub_name}</b><br/>Orders Handled: {order_count}<br/>Capacity Allocation: {capacity}",
                     "style": {
                         "backgroundColor": "#1a1e24",
                         "color": "white",
@@ -267,6 +289,7 @@ else:
                 }
             )
         )
+
 
         
     with chart_col:
