@@ -1,0 +1,83 @@
+{
+  "name": "Olist_Logistics_Fulfillment_Pipeline",
+  "settings": {
+    "sandbox": "dbt",
+    "tasks": [
+      {
+        "task_key": "dbt-staging",
+        "description": "Compiles raw source tables and builds Bronze Staging models.",
+        "dbt_task": {
+          "commands": [
+            "dbt run --select staging"
+          ],
+          "git_source": {
+            "git_url": "https://github.com/cwrjr/olist-data-platform.git",
+            "git_branch": "main",
+            "git_provider": "gitHub"
+          },
+          "profiles_dir": "transformations"
+        },
+        "warehouse_id": "d47b8b9ee1830b6a",
+        "timeout_seconds": 600
+      },
+      {
+        "task_key": "dbt-marts",
+        "description": "Builds Silver Core Dimensions/Facts and Gold Analytical Aggregates.",
+        "depends_on": [
+          {
+            "task_key": "dbt-staging"
+          }
+        ],
+        "dbt_task": {
+          "commands": [
+            "dbt run --select marts"
+          ],
+          "git_source": {
+            "git_url": "https://github.com/cwrjr/olist-data-platform.git",
+            "git_branch": "main",
+            "git_provider": "gitHub"
+          },
+          "profiles_dir": "transformations"
+        },
+        "warehouse_id": "d47b8b9ee1830b6a",
+        "timeout_seconds": 900
+      },
+      {
+        "task_key": "dbt-integration-tests",
+        "description": "Runs all schema validation and singular supply chain optimization integrity tests.",
+        "depends_on": [
+          {
+            "task_key": "dbt-marts"
+          }
+        ],
+        "dbt_task": {
+          "commands": [
+            "dbt test"
+          ],
+          "git_source": {
+            "git_url": "https://github.com/cwrjr/olist-data-platform.git",
+            "git_branch": "main",
+            "git_provider": "gitHub"
+          },
+          "profiles_dir": "transformations"
+        },
+        "warehouse_id": "d47b8b9ee1830b6a",
+        "timeout_seconds": 600
+      },
+      {
+        "task_key": "refresh-dashboard-cache",
+        "description": "Clears Streamlit cache to load newly computed Databricks SQL routing matrices.",
+        "depends_on": [
+          {
+            "task_key": "dbt-integration-tests"
+          }
+        ],
+        "spark_python_task": {
+          "python_file": "ingestion/refresh_cache.py"
+        },
+        "timeout_seconds": 300
+      }
+    ],
+    "format": "MULTI_TASK"
+  }
+}

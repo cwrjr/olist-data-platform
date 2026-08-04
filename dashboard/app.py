@@ -268,19 +268,29 @@ else:
             )
             layers.append(gold_hub_layer)
 
+        # Calculate dynamic map center based on selected routes to prevent manual panning
+        if not filtered_spatial.empty:
+            center_lat = float(filtered_spatial["customer_lat"].mean())
+            center_lon = float(filtered_spatial["customer_lon"].mean())
+            zoom_level = 5 if len(selected_states) > 3 else 6
+        else:
+            center_lat = -22.5
+            center_lon = -45.0
+            zoom_level = 5
 
         # Render Map with Pydeck (Tooltips enabled ONLY for interactive hub column queries)
         st.pydeck_chart(
             pdk.Deck(
                 map_style="mapbox://styles/mapbox/dark-v9",
                 initial_view_state=pdk.ViewState(
-                    latitude=-22.5,
-                    longitude=-45.0,
-                    zoom=5,
-                    pitch=45,
+                    latitude=center_lat,
+                    longitude=center_lon,
+                    zoom=zoom_level,
+                    pitch=40,
                     bearing=0
                 ),
                 layers=layers,
+
                 tooltip={
                     "html": "<b>{hub_name}</b><br/>Orders Handled: {order_count}<br/>Capacity Allocation: {capacity}",
                     "style": {
