@@ -83,6 +83,12 @@ def load_optimizer_data():
 # Load datasets
 df_exec, df_spatial = load_optimizer_data()
 
+# Convert all spatial coordinates to standard float64 to avoid serialization errors in Pydeck (which fallback to [0,0])
+if not df_spatial.empty:
+    for col in ["seller_lat", "seller_lon", "customer_lat", "customer_lon", "hub_lat", "hub_lon"]:
+        df_spatial[col] = pd.to_numeric(df_spatial[col], errors="coerce")
+
+
 # ----------------- SIDEBAR CONTROLS -----------------
 st.sidebar.title("🚚 Scenario Controls")
 st.sidebar.markdown("---")
