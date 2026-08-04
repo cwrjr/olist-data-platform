@@ -226,24 +226,24 @@ else:
                 "hub_name": "Sao Paulo Hub", 
                 "lat": -23.5505, 
                 "lon": -46.6333, 
-                "capacity_val": 150000, 
                 "capacity": "150,000", 
+                "orders_handled": sp_orders,
                 "order_count": f"{sp_orders:,}"
             },
             {
                 "hub_name": "Rio de Janeiro Hub", 
                 "lat": -22.9068, 
                 "lon": -43.1729, 
-                "capacity_val": 90000, 
                 "capacity": "90,000", 
+                "orders_handled": rj_orders,
                 "order_count": f"{rj_orders:,}"
             },
             {
                 "hub_name": "Belo Horizonte Hub", 
                 "lat": -19.9167, 
                 "lon": -43.9345, 
-                "capacity_val": 60000, 
                 "capacity": "60,000", 
+                "orders_handled": mg_orders,
                 "order_count": f"{mg_orders:,}"
             }
         ])
@@ -253,14 +253,15 @@ else:
                 "ColumnLayer",
                 data=hub_data,
                 get_position="[lon, lat]",
-                get_elevation="capacity_val",
-                elevation_scale=0.08,
-                radius=14000,
+                get_elevation="orders_handled",
+                elevation_scale=0.5,
+                radius=4000,
                 get_fill_color="[255, 193, 7, 210]",
                 pickable=True,
                 auto_highlight=True
             )
             layers.append(gold_hub_layer)
+
 
         # Render Map with Pydeck (Tooltips enabled ONLY for interactive hub column queries)
         st.pydeck_chart(
@@ -342,6 +343,11 @@ else:
             )
             
             if not merged_df.empty:
+                # Cast metrics to numeric types to avoid decimal.Decimal numpy round errors
+                merged_df["days_saved"] = pd.to_numeric(merged_df["days_saved"], errors="coerce")
+                merged_df["freight_dollars_saved"] = pd.to_numeric(merged_df["freight_dollars_saved"], errors="coerce")
+                merged_df["actual_freight"] = pd.to_numeric(merged_df["actual_freight"], errors="coerce")
+
                 # Group by Origin and Destination corridor
                 corridor_df = merged_df.groupby(["seller_state", "customer_state"]).agg(
                     total_orders=("order_key", "nunique"),
@@ -349,6 +355,11 @@ else:
                     total_freight_saved=("freight_dollars_saved", "sum"),
                     total_actual_freight=("actual_freight", "sum")
                 ).reset_index()
+                
+                # Convert corridor aggregated columns to float to ensure rounding succeeds
+                corridor_df["total_freight_saved"] = pd.to_numeric(corridor_df["total_freight_saved"], errors="coerce")
+                corridor_df["total_actual_freight"] = pd.to_numeric(corridor_df["total_actual_freight"], errors="coerce")
+                corridor_df["avg_days_saved"] = pd.to_numeric(corridor_df["avg_days_saved"], errors="coerce")
                 
                 # Calculate percentages and round values
                 corridor_df["freight_pct"] = (corridor_df["total_freight_saved"] / corridor_df["total_actual_freight"] * 100).round(1)
