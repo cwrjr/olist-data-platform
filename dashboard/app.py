@@ -99,6 +99,13 @@ scenario_mode = st.sidebar.radio(
     ["Baseline Routes", "Optimized Hubs", "Side-by-Side Comparison"]
 )
 
+st.sidebar.markdown("### Map Style (Show Water)")
+map_theme = st.sidebar.radio(
+    "Select Map Theme:",
+    ["Dark Mode", "Voyager (Blue Oceans)", "Satellite View"],
+    horizontal=True
+)
+
 # Filters
 st.sidebar.markdown("### Interactive Filters")
 
@@ -293,10 +300,18 @@ else:
             center_lon = -45.0
             zoom_level = 5
 
+        # Map theme selection to base map style URL
+        if map_theme == "Voyager (Blue Oceans)":
+            selected_map_style = "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
+        elif map_theme == "Satellite View":
+            selected_map_style = "mapbox://styles/mapbox/satellite-v9"
+        else:
+            selected_map_style = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+
         # Render Map with Pydeck (Tooltips enabled ONLY for interactive hub column queries)
         st.pydeck_chart(
             pdk.Deck(
-                map_style="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+                map_style=selected_map_style,
                 initial_view_state=pdk.ViewState(
                     latitude=center_lat,
                     longitude=center_lon,
