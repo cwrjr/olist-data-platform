@@ -189,6 +189,20 @@ else:
         
         # Configure Pydeck Map Layers
         layers = []
+
+        # 0. Vibrant state borders for clear geographic distinction
+        state_borders_layer = pdk.Layer(
+            "GeoJsonLayer",
+            "https://raw.githubusercontent.com/luizpedone/municipal-brazil-geojson/master/brazil_states.geojson",
+            stroked=True,
+            filled=False,
+            get_line_color="[0, 255, 204, 100]",  # Neon turquoise glow
+            get_line_width=3500,                  # Bold borders in meters
+            line_width_min_pixels=1.5,
+            pickable=False
+        )
+        layers.append(state_borders_layer)
+
         
         # 1. Red Arcs representing long-haul direct baseline routes
         if scenario_mode in ["Baseline Routes", "Side-by-Side Comparison"]:
