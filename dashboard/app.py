@@ -193,7 +193,7 @@ else:
         # 0. Vibrant state borders for clear geographic distinction (Neon Lavender)
         state_borders_layer = pdk.Layer(
             "GeoJsonLayer",
-            "https://raw.githubusercontent.com/luizpedone/municipal-brazil-geojson/master/brazil_states.geojson",
+            "/workspace/dashboard/brazil_states.geojson",
             stroked=True,
             filled=False,
             get_line_color="[224, 176, 255, 220]",  # Neon Lavender (high opacity)
@@ -296,7 +296,7 @@ else:
         # Render Map with Pydeck (Tooltips enabled ONLY for interactive hub column queries)
         st.pydeck_chart(
             pdk.Deck(
-                map_style="mapbox://styles/mapbox/dark-v9",
+                map_style="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
                 initial_view_state=pdk.ViewState(
                     latitude=center_lat,
                     longitude=center_lon,
