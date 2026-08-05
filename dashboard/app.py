@@ -83,6 +83,16 @@ def load_optimizer_data():
 # Load datasets
 df_exec, df_spatial = load_optimizer_data()
 
+# Load and cache Brazil states geojson locally to embed it in the Pydeck payload
+@st.cache_data
+def load_geojson():
+    import json
+    with open("/workspace/dashboard/brazil_states.geojson", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+geojson_data = load_geojson()
+
+
 # Convert all spatial coordinates to standard float64 to avoid serialization errors in Pydeck (which fallback to [0,0])
 if not df_spatial.empty:
     for col in ["seller_lat", "seller_lon", "customer_lat", "customer_lon", "hub_lat", "hub_lon"]:
@@ -200,14 +210,15 @@ else:
         # 0. Vibrant state borders for clear geographic distinction (Neon Lavender)
         state_borders_layer = pdk.Layer(
             "GeoJsonLayer",
-            "/workspace/dashboard/brazil_states.geojson",
+            data=geojson_data,
             stroked=True,
             filled=False,
-            get_line_color="[224, 176, 255, 220]",  # Neon Lavender (high opacity)
+            get_line_color="[224, 176, 225, 220]",  # Neon Lavender (high opacity)
             get_line_width=8000,                    # Extra bold borders in meters
             line_width_min_pixels=2.0,              # Keep thick when zoomed out
             pickable=False
         )
+
 
         layers.append(state_borders_layer)
 
